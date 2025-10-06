@@ -1,0 +1,68 @@
+services:
+  embeddingpoc:
+    image: ${DOCKER_REGISTRY-}embeddingpoc
+    container_name: api
+    build:
+      context: Api
+      dockerfile: Dockerfile
+    depends_on:
+      - migrations
+      - ollama
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=postgres;port=5432;Database=embeddingpoc;Username=postgres;Password=postgres
+      - Ollama__BaseUrl=http://ollama:11434
+      - Ollama__EmbeddingModel=all-minilm
+    ports:
+      - "5000:80"
+
+  postgres:
+    image: pgvector/pgvector:pg18
+    container_name: postgres
+    environment:
+      POSTGRES_DB: embeddingpoc
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ollama:
+    image: ollama/ollama:latest  # Use the official Ollama image
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    entrypoint:
+      [
+        "/bin/bash",
+        "-c",
+        "ollama serve & sleep 5 && ollama pull all-minilm && wait",
+      ]
+    environment:
+      - OLLAMA_KEEP_ALIVE="24h"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+
+  migrations:
+    image: mcr.microsoft.com/dotnet/sdk:10.0
+    container_name: migrations
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: >
+      sh -c "dotnet tool install --global dotnet-ef &&
+             /root/.dotnet/tools/dotnet-ef database update --no-build -p Api -s Api --connection 'Host=postgres;Port=5432;Database=embeddingpoc;Username=postgres;Password=postgres'"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  ollama_data:
