@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Api/EmbeddingPoC.csproj" />
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
+</Solution>

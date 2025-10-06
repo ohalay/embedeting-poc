@@ -1,0 +1,35 @@
+@host = http://localhost:62109
+
+### GET first 20 texts from /text
+GET {{host}}/text/
+Accept: application/json
+
+### POST 20 AI technology-related texts to /text
+POST {{host}}/text
+Content-Type: application/json
+
+[
+	{ "content": "Retrieval-Augmented Generation (RAG) combines retrieval and generation for improved question answering." },
+	{ "content": "Large Language Models (LLMs) like GPT-4 are capable of understanding and generating human-like text." },
+	{ "content": "Small Language Models (SLMs) are optimized for edge devices with limited resources." },
+	{ "content": "Computer Vision enables machines to interpret and process visual information from the world." },
+	{ "content": "Speech Recognition converts spoken language into text using AI algorithms." },
+	{ "content": "Natural Language Processing (NLP) allows computers to understand and generate human language." },
+	{ "content": "Reinforcement Learning trains agents to make decisions by rewarding desired behaviors." },
+	{ "content": "Generative Adversarial Networks (GANs) are used to generate realistic images and data." },
+	{ "content": "Transfer Learning leverages pre-trained models to solve new tasks with less data." },
+	{ "content": "Zero-shot Learning enables models to recognize objects they have never seen before." },
+	{ "content": "Few-shot Learning allows AI systems to learn from a small number of examples." },
+	{ "content": "Multimodal AI processes and integrates information from multiple data types, such as text and images." },
+	{ "content": "Explainable AI (XAI) provides transparency into how AI models make decisions." },
+	{ "content": "Edge AI brings intelligence to devices at the edge of the network, reducing latency." },
+	{ "content": "Federated Learning trains AI models across decentralized devices while preserving privacy." },
+	{ "content": "Anomaly Detection identifies unusual patterns or outliers in data using AI." },
+	{ "content": "Time Series Forecasting predicts future values based on historical data trends." },
+	{ "content": "Optical Character Recognition (OCR) extracts text from images and scanned documents." },
+	{ "content": "Recommendation Systems suggest products or content based on user preferences." },
+	{ "content": "Knowledge Graphs organize and connect information to enable smarter search and reasoning." }
+]
+
+### Vector search
+GET {{host}}/text/search?query=What is RAG
